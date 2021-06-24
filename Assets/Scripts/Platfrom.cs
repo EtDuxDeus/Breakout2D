@@ -5,14 +5,20 @@ using UnityEngine;
 
 namespace Tools
 {
-	public class PlatfromMovement : MonoBehaviour
+	public class Platfrom : MonoBehaviour
 	{
-		private float _platformSpeed = 10;
+		private float _platformSpeed;
 
 
 		private void Update()
 		{
 			MovePlatform();
+		}
+
+
+		public void SetThePlatformSpeed(float Speed)
+		{
+			_platformSpeed = Speed;
 		}
 
 

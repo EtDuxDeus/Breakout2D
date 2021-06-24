@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 namespace Tools
@@ -8,22 +7,41 @@ namespace Tools
 	public class GameManager : MonoBehaviour
 	{
 		[SerializeField]
-		private GameObject _ballPrefab;
+		private Ball _ballPrefab;
 		[SerializeField]
-		private GameObject _ball;
-		[SerializeField]
-		private GameObject _platform;
-		private Rigidbody2D _ballRigidBody;
+		private Platfrom _platform;
 		private bool _gameIsStarted;
+		[SerializeField]
+		private BricksManager _bricksManager;
+		[SerializeField]
+		private GameObject _gameOverScreen;
+		private Ball _ball;
 
 		public static float BallSpeed = 250f;
+		public static float PlatformSpeed = 10f;
 
 
 		private void Start()
 		{
 			CreateBall();
-			_ballRigidBody = _ball.GetComponent<Rigidbody2D>();
 			_gameIsStarted = false;
+			_bricksManager.gameObject.SetActive(true);
+			_bricksManager.CreateBricks();
+			_platform.SetThePlatformSpeed(PlatformSpeed);
+		}
+
+
+		private void OnEnable()
+		{
+			Ball.OnBallDeath += ShowGameOverScreen;
+			Brick.OnBrickDestroy += OnBrickDestroy;
+		}
+
+
+		private void OnDisable()
+		{
+			Ball.OnBallDeath -= ShowGameOverScreen;
+			Brick.OnBrickDestroy -= OnBrickDestroy;
 		}
 
 
@@ -31,22 +49,62 @@ namespace Tools
 		{
 			if (!_gameIsStarted)
 			{
-				Vector3 platformPosition = _platform.transform.position;
-				Vector3 ballPosition = new Vector3(platformPosition.x, platformPosition.y + 0.35f, platformPosition.z);
-				_ball.transform.position = ballPosition;
+				HoldBallOnPlatform();
 			}
-			if (Input.GetKeyDown(KeyCode.Space))
+			if (Input.GetKeyDown(KeyCode.Space) & !_gameIsStarted)
 			{
-				_ballRigidBody.isKinematic = false;
-				_ballRigidBody.AddForce(new Vector2(0, BallSpeed));
-				_gameIsStarted = true;
+				StartGame();
 			}
+		}
+
+
+		private void OnBrickDestroy()
+		{
+			if (_bricksManager.CountRemainingBricks() == 0)
+			{
+				_bricksManager.CreateBricks();
+			}
+		}
+
+
+		private void HoldBallOnPlatform()
+		{
+			_ball.transform.position = new Vector3(_platform.transform.position.x, _platform.transform.position.y + 0.35f, _platform.transform.position.z);
+		}
+
+
+		private void StartGame()
+		{
+			_gameIsStarted = true;
+			_ball.SetTheBallSpeed(BallSpeed);
+			_ball.PushTheBall();
+		}
+
+
+		private void ShowGameOverScreen()
+		{
+			_gameOverScreen.SetActive(true);
+		}
+
+
+		public void Restart()
+		{
+			_bricksManager.DestroyAllBricks();
+			_bricksManager.CreateBricks();
+			CreateBall();
+			_gameIsStarted = false;
+		}
+
+
+		public void RestartGame()
+		{
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 		}
 
 
 		private void CreateBall()
 		{
-			_ball = Instantiate(_ballPrefab);
+			_ball = Instantiate(_ballPrefab, _platform.transform.position, Quaternion.identity);
 		}
 	}
 }
