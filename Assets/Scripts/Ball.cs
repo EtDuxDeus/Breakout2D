@@ -14,11 +14,17 @@ namespace Tools
 		private float _ballSpeed;
 
 
-
 		private void Awake()
 		{
 			_ballRigidBody = gameObject.GetComponent<Rigidbody2D>();
 		}
+
+
+		public void HoldBallOnPlatform(Platform _platform)
+		{
+			transform.position = new Vector3(_platform.transform.position.x, _platform.transform.position.y + 0.35f, _platform.transform.position.z);
+		}
+
 
 		public void PushTheBall()
 		{
@@ -30,6 +36,12 @@ namespace Tools
 		public void SetTheBallSpeed(float targetSpeed)
 		{
 			_ballSpeed = targetSpeed;
+		}
+
+
+		public float GetTheBallSpeed()
+		{
+			return _ballSpeed;
 		}
 
 

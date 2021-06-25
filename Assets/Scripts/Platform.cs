@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Tools
 {
-	public class Platfrom : MonoBehaviour
+	public class Platform : MonoBehaviour
 	{
 		private float _platformSpeed;
 
@@ -36,10 +36,11 @@ namespace Tools
 				Rigidbody2D ballRigidBody = collision.gameObject.GetComponent<Rigidbody2D>();
 				Vector3 centerOfPlatform = transform.position;
 				ballRigidBody.velocity = Vector2.zero;
+				Ball ball = collision.gameObject.GetComponent<Ball>();
 
 				float difference = collision.transform.position.x - centerOfPlatform.x;
 
-				ballRigidBody.AddForce(new Vector2(difference * 200, GameManager.BallSpeed));
+				ballRigidBody.AddForce(new Vector2(difference * 200, ball.GetTheBallSpeed()));
 			}
 		}
 	}
