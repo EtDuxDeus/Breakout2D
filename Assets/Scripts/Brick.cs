@@ -9,6 +9,7 @@ namespace Tools
 		public static event Action OnBrickDestroy;
 		public static event Action OnBrickHitingDeadthZone;
 
+
 		[SerializeField]
 		private ParticleSystem _deathEffect;
 

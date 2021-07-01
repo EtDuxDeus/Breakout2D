@@ -43,8 +43,10 @@ namespace Tools
 		public void CreateBricks()
 		{
 			_allBricks = new List<Brick>();
+
 			float currentBrickSpawnPositionX = _firstBrickPositionX;
 			float currentBrickSpawnPositionY = _firstBrickPositionY;
+
 			for (int i = 0; i < 6; i++)
 			{
 				for (int j = 0; j < 12; j++)
